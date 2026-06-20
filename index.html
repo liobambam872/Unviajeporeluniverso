@@ -1,0 +1,1128 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Un universo para ti</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: white;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 115%, #34236d 0%, transparent 36%),
+        radial-gradient(circle at 15% 20%, #172862 0%, transparent 30%),
+        linear-gradient(180deg, #020617 0%, #090d2c 45%, #160a38 100%);
+    }
+
+    .universo-fondo {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .nebulosa {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.25;
+      animation: moverNebulosa 12s ease-in-out infinite alternate;
+    }
+
+    .nebulosa.uno {
+      width: 330px;
+      height: 330px;
+      left: -80px;
+      top: 10%;
+      background: #3457ff;
+    }
+
+    .nebulosa.dos {
+      width: 390px;
+      height: 390px;
+      right: -130px;
+      top: 30%;
+      background: #c026d3;
+      animation-delay: 3s;
+    }
+
+    .nebulosa.tres {
+      width: 300px;
+      height: 300px;
+      left: 30%;
+      bottom: -140px;
+      background: #7c3aed;
+      animation-delay: 6s;
+    }
+
+    .estrella {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 9px white;
+      animation: parpadear 2.5s ease-in-out infinite alternate;
+    }
+
+    .inicio {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background:
+        radial-gradient(circle at top, rgba(112, 91, 255, 0.28), transparent 38%),
+        linear-gradient(145deg, #020617, #101644 55%, #281253);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .inicio.ocultar {
+      opacity: 0;
+      transform: scale(1.06);
+      pointer-events: none;
+    }
+
+    .caja-inicio {
+      width: 100%;
+      max-width: 570px;
+      padding: 38px 26px;
+      border-radius: 34px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      backdrop-filter: blur(18px);
+      box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.48),
+        inset 0 0 30px rgba(255, 255, 255, 0.06);
+    }
+
+    .icono-inicio {
+      margin-bottom: 15px;
+      font-size: 68px;
+      animation: flotar 3s ease-in-out infinite;
+    }
+
+    .caja-inicio h1 {
+      margin: 0 0 14px;
+      font-size: clamp(31px, 7vw, 44px);
+      color: #f7f5ff;
+      text-shadow: 0 5px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .caja-inicio p {
+      margin: 0;
+      color: #ddd9ff;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .boton-inicio {
+      margin-top: 26px;
+      padding: 16px 34px;
+      border: 0;
+      border-radius: 40px;
+      background: linear-gradient(135deg, #ffffff, #c4b5fd);
+      color: #38237e;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 15px 34px rgba(0, 0, 0, 0.34);
+      transition: 0.25s ease;
+    }
+
+    .boton-inicio:hover {
+      transform: translateY(-3px) scale(1.04);
+    }
+
+    .contenido {
+      position: relative;
+      z-index: 10;
+      display: none;
+      min-height: 100vh;
+      padding: 28px 16px 55px;
+      animation: aparecer 1s ease forwards;
+    }
+
+    .encabezado {
+      width: min(760px, 95%);
+      margin: 0 auto 20px;
+    }
+
+    .encabezado h2 {
+      margin: 0;
+      font-size: clamp(30px, 7vw, 48px);
+      color: #f8f7ff;
+      text-shadow: 0 0 25px rgba(164, 139, 255, 0.7);
+    }
+
+    .encabezado p {
+      margin: 10px 0 0;
+      color: #cfd2ff;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .panel-mensaje {
+      position: sticky;
+      top: 12px;
+      z-index: 35;
+      width: min(650px, 94%);
+      min-height: 104px;
+      margin: 0 auto 25px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 27px;
+      background: rgba(13, 18, 55, 0.78);
+      border: 1px solid rgba(196, 181, 253, 0.28);
+      backdrop-filter: blur(16px);
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.33),
+        inset 0 0 24px rgba(255, 255, 255, 0.04);
+    }
+
+    .mensaje {
+      margin: 0;
+      color: #f8f7ff;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .mensaje.animar {
+      animation: mostrarMensaje 0.5s ease;
+    }
+
+    .contador {
+      margin: 10px 0 0;
+      color: #b9bbec;
+      font-size: 13px;
+    }
+
+    .sistema-solar {
+      position: relative;
+      width: min(760px, 96vw);
+      min-height: 1130px;
+      margin: 0 auto;
+      padding-top: 30px;
+    }
+
+    .camino {
+      position: absolute;
+      left: 50%;
+      top: 70px;
+      bottom: 100px;
+      width: 4px;
+      transform: translateX(-50%);
+      border-radius: 10px;
+      background: linear-gradient(
+        180deg,
+        rgba(96, 165, 250, 0.1),
+        rgba(196, 181, 253, 0.85),
+        rgba(253, 224, 71, 0.7)
+      );
+      box-shadow: 0 0 18px rgba(167, 139, 250, 0.5);
+    }
+
+    .planeta-fila {
+      position: relative;
+      z-index: 5;
+      min-height: 135px;
+      display: flex;
+      align-items: center;
+    }
+
+    .planeta-fila:nth-child(even) {
+      justify-content: flex-start;
+      padding-left: 8%;
+    }
+
+    .planeta-fila:nth-child(odd) {
+      justify-content: flex-end;
+      padding-right: 8%;
+    }
+
+    .planeta-contenedor {
+      position: relative;
+      width: 235px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .planeta-fila:nth-child(odd) .planeta-contenedor {
+      flex-direction: row-reverse;
+    }
+
+    .planeta {
+      position: relative;
+      flex: 0 0 auto;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition:
+        transform 0.35s ease,
+        filter 0.35s ease,
+        opacity 0.45s ease;
+      box-shadow:
+        inset -16px -15px 22px rgba(0, 0, 0, 0.32),
+        inset 10px 9px 15px rgba(255, 255, 255, 0.16),
+        0 0 25px rgba(255, 255, 255, 0.13);
+    }
+
+    .planeta::after {
+      content: "";
+      position: absolute;
+      width: 23%;
+      height: 23%;
+      top: 18%;
+      left: 20%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      filter: blur(3px);
+    }
+
+    .planeta.activo {
+      animation: planetaActivo 1.7s ease-in-out infinite;
+      filter: brightness(1.12);
+    }
+
+    .planeta.activo:hover {
+      transform: scale(1.12);
+    }
+
+    .planeta.bloqueado {
+      cursor: not-allowed;
+      filter: grayscale(0.8) brightness(0.45);
+      opacity: 0.58;
+    }
+
+    .planeta.completado {
+      pointer-events: none;
+      opacity: 0.25;
+      filter: grayscale(0.5);
+      transform: scale(0.82);
+    }
+
+    .nombre-planeta {
+      padding: 9px 13px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      color: #eef0ff;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .candado {
+      margin-left: 4px;
+      opacity: 0.75;
+    }
+
+    .neptuno {
+      width: 78px;
+      height: 78px;
+      background:
+        repeating-linear-gradient(
+          8deg,
+          transparent 0 9px,
+          rgba(255,255,255,0.13) 10px 14px
+        ),
+        linear-gradient(135deg, #60a5fa, #1d4ed8 60%, #172554);
+    }
+
+    .urano {
+      width: 82px;
+      height: 82px;
+      background:
+        linear-gradient(135deg, #cffafe, #67e8f9 50%, #0891b2);
+    }
+
+    .urano::before {
+      content: "";
+      position: absolute;
+      inset: 33px -23px;
+      border: 4px solid rgba(207, 250, 254, 0.75);
+      border-radius: 50%;
+      transform: rotate(-18deg);
+      z-index: -1;
+    }
+
+    .saturno {
+      width: 94px;
+      height: 94px;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          #f9d88a 0 9px,
+          #d99b4e 10px 15px,
+          #f6c974 16px 23px
+        );
+    }
+
+    .saturno::before {
+      content: "";
+      position: absolute;
+      inset: 31px -35px;
+      border: 9px solid rgba(236, 197, 116, 0.85);
+      border-radius: 50%;
+      transform: rotate(-15deg);
+      z-index: -1;
+    }
+
+    .jupiter {
+      width: 106px;
+      height: 106px;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          #ecd4ae 0 10px,
+          #b9784c 11px 20px,
+          #f2d6a8 21px 31px,
+          #975938 32px 40px
+        );
+    }
+
+    .jupiter::before {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 16px;
+      right: 17px;
+      bottom: 27px;
+      border-radius: 50%;
+      background: #b94932;
+    }
+
+    .marte {
+      width: 75px;
+      height: 75px;
+      background:
+        radial-gradient(circle at 28% 32%, #8b2f1c 0 7%, transparent 8%),
+        radial-gradient(circle at 63% 65%, #7b2415 0 10%, transparent 11%),
+        linear-gradient(135deg, #fb923c, #b9381f 65%, #62180f);
+    }
+
+    .venus {
+      width: 80px;
+      height: 80px;
+      background:
+        repeating-linear-gradient(
+          22deg,
+          rgba(255,255,255,0.14) 0 8px,
+          transparent 9px 17px
+        ),
+        linear-gradient(135deg, #fde68a, #f59e0b 57%, #9a4f08);
+    }
+
+    .tierra {
+      width: 108px;
+      height: 108px;
+      background:
+        radial-gradient(ellipse at 35% 33%, #38a169 0 13%, transparent 14%),
+        radial-gradient(ellipse at 64% 58%, #4ade80 0 15%, transparent 16%),
+        radial-gradient(ellipse at 45% 79%, #258d52 0 9%, transparent 10%),
+        radial-gradient(circle at 50% 50%, #38bdf8, #0369a1 70%, #082f49);
+      box-shadow:
+        inset -18px -14px 24px rgba(0, 0, 0, 0.38),
+        inset 13px 10px 18px rgba(255, 255, 255, 0.19),
+        0 0 37px rgba(56, 189, 248, 0.55);
+    }
+
+    .zona-sol {
+      position: relative;
+      z-index: 6;
+      height: 230px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sol-central {
+      width: 155px;
+      height: 155px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, #fffbd1 0 10%, #fde047 30%, #f59e0b 67%, #ea580c);
+      box-shadow:
+        0 0 35px #fde047,
+        0 0 75px rgba(245, 158, 11, 0.75),
+        0 0 130px rgba(234, 88, 12, 0.4);
+      animation: solVivo 3s ease-in-out infinite;
+    }
+
+    .final {
+      display: none;
+      width: min(650px, 94%);
+      margin: 15px auto 0;
+      padding: 27px 22px;
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 45%),
+        linear-gradient(145deg, rgba(46, 38, 125, 0.88), rgba(91, 33, 182, 0.86));
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.38);
+      animation: mostrarFinal 0.9s ease;
+    }
+
+    .final h3 {
+      margin: 0 0 12px;
+      font-size: 29px;
+    }
+
+    .final p {
+      margin: 0;
+      color: #eeeaff;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .corazon-final {
+      margin-top: 15px;
+      font-size: 48px;
+      animation: latir 1.25s infinite;
+    }
+
+    #playerMusica {
+      position: fixed;
+      left: -9999px;
+      top: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes planetaActivo {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          inset -16px -15px 22px rgba(0, 0, 0, 0.32),
+          0 0 20px rgba(255,255,255,0.28);
+      }
+
+      50% {
+        transform: scale(1.08);
+        box-shadow:
+          inset -16px -15px 22px rgba(0, 0, 0, 0.32),
+          0 0 43px rgba(196,181,253,0.85);
+      }
+    }
+
+    @keyframes mostrarMensaje {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes mostrarFinal {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes solVivo {
+      0%, 100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.06);
+      }
+    }
+
+    @keyframes parpadear {
+      from {
+        opacity: 0.35;
+        transform: scale(0.7);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1.25);
+      }
+    }
+
+    @keyframes moverNebulosa {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(35px, -25px) scale(1.12);
+      }
+    }
+
+    @keyframes flotar {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes latir {
+      0%, 100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.18);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .contenido {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .planeta-fila:nth-child(even) {
+        padding-left: 1%;
+      }
+
+      .planeta-fila:nth-child(odd) {
+        padding-right: 1%;
+      }
+
+      .planeta-contenedor {
+        width: 172px;
+        gap: 8px;
+      }
+
+      .nombre-planeta {
+        padding: 7px 9px;
+        font-size: 11px;
+      }
+
+      .jupiter {
+        width: 91px;
+        height: 91px;
+      }
+
+      .saturno {
+        width: 82px;
+        height: 82px;
+      }
+
+      .tierra {
+        width: 94px;
+        height: 94px;
+      }
+
+      .sol-central {
+        width: 130px;
+        height: 130px;
+      }
+
+      .panel-mensaje {
+        top: 7px;
+        min-height: 94px;
+        padding: 15px;
+      }
+
+      .mensaje {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="universo-fondo">
+    <div class="nebulosa uno"></div>
+    <div class="nebulosa dos"></div>
+    <div class="nebulosa tres"></div>
+
+    <div class="estrella" style="left:5%; top:8%; animation-delay:0s;"></div>
+    <div class="estrella" style="left:15%; top:28%; animation-delay:1s;"></div>
+    <div class="estrella" style="left:25%; top:12%; animation-delay:2s;"></div>
+    <div class="estrella" style="left:36%; top:38%; animation-delay:.7s;"></div>
+    <div class="estrella" style="left:48%; top:8%; animation-delay:1.4s;"></div>
+    <div class="estrella" style="left:57%; top:28%; animation-delay:2.2s;"></div>
+    <div class="estrella" style="left:66%; top:15%; animation-delay:.4s;"></div>
+    <div class="estrella" style="left:76%; top:36%; animation-delay:1.6s;"></div>
+    <div class="estrella" style="left:88%; top:10%; animation-delay:2.5s;"></div>
+    <div class="estrella" style="left:95%; top:48%; animation-delay:1.1s;"></div>
+    <div class="estrella" style="left:9%; top:67%; animation-delay:2.8s;"></div>
+    <div class="estrella" style="left:22%; top:84%; animation-delay:.9s;"></div>
+    <div class="estrella" style="left:42%; top:69%; animation-delay:1.9s;"></div>
+    <div class="estrella" style="left:61%; top:87%; animation-delay:.3s;"></div>
+    <div class="estrella" style="left:81%; top:72%; animation-delay:2.4s;"></div>
+    <div class="estrella" style="left:92%; top:91%; animation-delay:1.3s;"></div>
+  </div>
+
+  <section class="inicio" id="inicio">
+    <div class="caja-inicio">
+      <div class="icono-inicio">🚀🪐</div>
+
+      <h1 id="tituloInicio"></h1>
+
+      <p id="mensajeInicio"></p>
+
+      <button
+        class="boton-inicio"
+        id="textoBoton"
+        onclick="abrirUniverso()">
+      </button>
+    </div>
+  </section>
+
+  <main class="contenido" id="contenido">
+
+    <header class="encabezado">
+      <h2 id="tituloPrincipal"></h2>
+      <p id="subtituloPrincipal"></p>
+    </header>
+
+    <section class="panel-mensaje">
+      <div>
+        <p class="mensaje" id="mensajeActual"></p>
+        <p class="contador" id="contador"></p>
+      </div>
+    </section>
+
+    <section class="sistema-solar">
+      <div class="camino"></div>
+
+      <div class="planeta-fila">
+        <div class="planeta-contenedor">
+          <button
+            class="planeta neptuno activo"
+            onclick="tocarPlaneta(0, this)">
+          </button>
+
+          <span class="nombre-planeta">
+            Neptuno <span class="candado" id="candado0">✨</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="planeta-fila">
+        <div class="planeta-contenedor">
+          <button
+            class="planeta urano bloqueado"
+            onclick="tocarPlaneta(1, this)">
+          </button>
+
+          <span class="nombre-planeta">
+            Urano <span class="candado" id="candado1">🔒</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="planeta-fila">
+        <div class="planeta-contenedor">
+          <button
+            class="planeta saturno bloqueado"
+            onclick="tocarPlaneta(2, this)">
+          </button>
+
+          <span class="nombre-planeta">
+            Saturno <span class="candado" id="candado2">🔒</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="planeta-fila">
+        <div class="planeta-contenedor">
+          <button
+            class="planeta jupiter bloqueado"
+            onclick="tocarPlaneta(3, this)">
+          </button>
+
+          <span class="nombre-planeta">
+            Júpiter <span class="candado" id="candado3">🔒</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="planeta-fila">
+        <div class="planeta-contenedor">
+          <button
+            class="planeta marte bloqueado"
+            onclick="tocarPlaneta(4, this)">
+          </button>
+
+          <span class="nombre-planeta">
+            Marte <span class="candado" id="candado4">🔒</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="planeta-fila">
+        <div class="planeta-contenedor">
+          <button
+            class="planeta venus bloqueado"
+            onclick="tocarPlaneta(5, this)">
+          </button>
+
+          <span class="nombre-planeta">
+            Venus <span class="candado" id="candado5">🔒</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="planeta-fila">
+        <div class="planeta-contenedor">
+          <button
+            class="planeta tierra bloqueado"
+            onclick="tocarPlaneta(6, this)">
+          </button>
+
+          <span class="nombre-planeta">
+            Tierra <span class="candado" id="candado6">🔒</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="zona-sol">
+        <div class="sol-central"></div>
+      </div>
+    </section>
+
+    <section class="final" id="final">
+      <h3 id="tituloFinal"></h3>
+      <p id="mensajeFinal"></p>
+      <div class="corazon-final">💙🌎✨</div>
+    </section>
+
+    <div id="playerMusica"></div>
+
+  </main>
+
+  <script>
+    /*
+      =====================================================
+      EDITA SOLO ESTA PARTE
+      Aquí puedes cambiar mensajes y música.
+      =====================================================
+    */
+
+    const CONFIGURACION_DEL_REGALO = {
+      tituloPestana: "Un universo para ti",
+
+      tituloInicio: "🌌 Tengo un universo para ti 🌌",
+
+      mensajeInicio:
+        "Prepárate para realizar un viaje especial. Toca cada planeta desde el más lejano hasta llegar a la Tierra y descubre los mensajes que guardé para ti.",
+
+      textoBoton: "Comenzar el viaje 🚀",
+
+      tituloPrincipal: "Siete planetas, siete mensajes",
+
+      subtituloPrincipal:
+        "Empieza por Neptuno y avanza en orden hasta llegar a nuestro planeta Tierra.",
+
+      mensajeInicial:
+        "El viaje comienza muy lejos de la Tierra. Toca Neptuno para descubrir el primer mensaje 💫",
+
+      nombresPlanetas: [
+        "Neptuno",
+        "Urano",
+        "Saturno",
+        "Júpiter",
+        "Marte",
+        "Venus",
+        "Tierra"
+      ],
+
+      mensajesPlanetas: [
+        "Neptuno: aunque estuvieras en el lugar más lejano del universo, seguirías siendo alguien imposible de olvidar 💙",
+
+        "Urano: eres una persona diferente, auténtica y especial. Esa forma única de ser es una de las cosas más bonitas que tienes ✨",
+
+        "Saturno: así como sus anillos rodean el planeta, deseo que siempre estés rodeado de cariño, paz y personas sinceras 🪐",
+
+        "Júpiter: entre tantos planetas, este es el más grande; pero ni siquiera su tamaño alcanza para representar todo lo bueno que deseo para ti 🌟",
+
+        "Marte: incluso en los días difíciles, recuerda que tienes fuerza suficiente para continuar y conquistar nuevos sueños 🚀",
+
+        "Venus: este planeta representa la belleza, pero la verdadera belleza se encuentra en tu corazón, tu personalidad y tu manera de tratar a los demás 💛",
+
+        "Tierra: después de viajar por todo el universo llegamos al lugar donde estás tú. Y eso convierte a la Tierra en mi planeta favorito 🌎💙"
+      ],
+
+      tituloFinal: "El viaje terminó en la Tierra",
+
+      mensajeFinal:
+        "Recorrimos siete planetas para llegar hasta aquí. Entre millones de estrellas, mundos y lugares posibles, me alegra coincidir contigo en este pequeño planeta. Nunca olvides que eres una persona especial y que tu existencia hace más bonito este universo.",
+
+      /*
+        Pega aquí únicamente el ID del video de YouTube.
+
+        Ejemplo:
+        Link:
+        https://www.youtube.com/watch?v=ABC123XYZ
+
+        ID:
+        ABC123XYZ
+      */
+
+      youtubeVideoID: "REEMPLAZA_AQUI_EL_ID"
+    };
+
+    /*
+      =====================================================
+      DESDE AQUÍ NO NECESITAS MODIFICAR NADA
+      =====================================================
+    */
+
+    let planetaActual = 0;
+    let musicaIniciada = false;
+
+    const planetas = document.querySelectorAll(".planeta");
+    const mensajeActual = document.getElementById("mensajeActual");
+    const contador = document.getElementById("contador");
+
+    document.title =
+      CONFIGURACION_DEL_REGALO.tituloPestana;
+
+    document.getElementById("tituloInicio").textContent =
+      CONFIGURACION_DEL_REGALO.tituloInicio;
+
+    document.getElementById("mensajeInicio").textContent =
+      CONFIGURACION_DEL_REGALO.mensajeInicio;
+
+    document.getElementById("textoBoton").textContent =
+      CONFIGURACION_DEL_REGALO.textoBoton;
+
+    document.getElementById("tituloPrincipal").textContent =
+      CONFIGURACION_DEL_REGALO.tituloPrincipal;
+
+    document.getElementById("subtituloPrincipal").textContent =
+      CONFIGURACION_DEL_REGALO.subtituloPrincipal;
+
+    mensajeActual.textContent =
+      CONFIGURACION_DEL_REGALO.mensajeInicial;
+
+    actualizarContador();
+
+    function abrirUniverso() {
+      const inicio = document.getElementById("inicio");
+      const contenido = document.getElementById("contenido");
+
+      iniciarMusicaDeFondo();
+
+      inicio.classList.add("ocultar");
+
+      setTimeout(() => {
+        inicio.style.display = "none";
+        contenido.style.display = "block";
+
+        setTimeout(() => {
+          planetas[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+        }, 250);
+      }, 700);
+    }
+
+    function iniciarMusicaDeFondo() {
+      if (musicaIniciada) {
+        return;
+      }
+
+      const videoID =
+        CONFIGURACION_DEL_REGALO.youtubeVideoID.trim();
+
+      if (
+        !videoID ||
+        videoID === "2mY7AFTtYwQ&list=RD2mY7AFTtYwQ&start_radio=1"
+      ) {
+        console.log("Falta colocar el ID de YouTube.");
+        return;
+      }
+
+      musicaIniciada = true;
+
+      document.getElementById("playerMusica").innerHTML = `
+        <iframe
+          width="1"
+          height="1"
+          src="https://www.youtube.com/embed/${videoID}?autoplay=1&loop=1&playlist=${videoID}&controls=0&rel=0&modestbranding=1"
+          title="Música de fondo"
+          frameborder="0"
+          allow="autoplay; encrypted-media">
+        </iframe>
+      `;
+    }
+
+    function tocarPlaneta(indice, planeta) {
+      if (indice !== planetaActual) {
+        mostrarAviso(indice);
+        return;
+      }
+
+      mostrarMensaje(
+        CONFIGURACION_DEL_REGALO.mensajesPlanetas[indice]
+      );
+
+      planeta.classList.remove("activo");
+      planeta.classList.add("completado");
+
+      const candadoActual =
+        document.getElementById("candado" + indice);
+
+      if (candadoActual) {
+        candadoActual.textContent = "✓";
+      }
+
+      planetaActual++;
+
+      if (planetaActual < planetas.length) {
+        const siguientePlaneta =
+          planetas[planetaActual];
+
+        siguientePlaneta.classList.remove("bloqueado");
+        siguientePlaneta.classList.add("activo");
+
+        const siguienteCandado =
+          document.getElementById(
+            "candado" + planetaActual
+          );
+
+        if (siguienteCandado) {
+          siguienteCandado.textContent = "✨";
+        }
+
+        setTimeout(() => {
+          siguientePlaneta.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+        }, 850);
+      } else {
+        completarViaje();
+      }
+
+      actualizarContador();
+    }
+
+    function mostrarMensaje(texto) {
+      mensajeActual.classList.remove("animar");
+
+      void mensajeActual.offsetWidth;
+
+      mensajeActual.textContent = texto;
+      mensajeActual.classList.add("animar");
+    }
+
+    function mostrarAviso(indice) {
+      if (planetaActual >= planetas.length) {
+        return;
+      }
+
+      const nombreCorrecto =
+        CONFIGURACION_DEL_REGALO
+          .nombresPlanetas[planetaActual];
+
+      const nombreTocado =
+        CONFIGURACION_DEL_REGALO
+          .nombresPlanetas[indice];
+
+      mostrarMensaje(
+        nombreTocado +
+        " todavía está bloqueado 🔒 Primero debes tocar " +
+        nombreCorrecto +
+        "."
+      );
+
+      planetas[planetaActual].scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+
+    function actualizarContador() {
+      if (planetaActual < planetas.length) {
+        contador.textContent =
+          "Planeta " +
+          (planetaActual + 1) +
+          " de " +
+          planetas.length +
+          " · Siguiente: " +
+          CONFIGURACION_DEL_REGALO
+            .nombresPlanetas[planetaActual];
+      } else {
+        contador.textContent =
+          "Has descubierto los siete mensajes ✨";
+      }
+    }
+
+    function completarViaje() {
+      const final =
+        document.getElementById("final");
+
+      document.getElementById(
+        "tituloFinal"
+      ).textContent =
+        CONFIGURACION_DEL_REGALO.tituloFinal;
+
+      document.getElementById(
+        "mensajeFinal"
+      ).textContent =
+        CONFIGURACION_DEL_REGALO.mensajeFinal;
+
+      setTimeout(() => {
+        final.style.display = "block";
+
+        final.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }, 900);
+    }
+  </script>
+
+</body>
+</html>
+```
